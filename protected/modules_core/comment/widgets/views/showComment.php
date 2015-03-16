@@ -14,7 +14,7 @@ $canWrite = $comment->canWrite();
 $canDelete = $comment->canDelete();
 ?>
 
-<div class="media" id="comment_<?php echo $comment->id; ?>">
+<div class="media commentholder" id="comment_<?php echo $comment->id; ?>">
     <?php if ($canWrite || $canDelete) : ?>
 
         <ul class="nav nav-pills preferences">
@@ -60,32 +60,33 @@ $canDelete = $comment->canDelete();
 
     <a href="<?php echo $user->getUrl(); ?>" class="pull-left">
         <img class="media-object img-rounded user-image" src="<?php echo $user->getProfileImage()->getUrl(); ?>"
-             width="40"
-             height="40" alt="40x40" data-src="holder.js/40x40" style="width: 40px; height: 40px;"/>
+             width="20"
+             height="20" alt="20x20" data-src="holder.js/20x20" style="width: 20px; height: 20px;"/>
     </a>
 
     <div class="media-body">
-        <h4 class="media-heading"><a href="<?php echo $user->getProfileUrl(); ?>"><?php echo CHtml::encode($user->displayName); ?></a>
-            <small><?php echo HHtml::timeago($comment->created_at); ?>
-                <?php if ($comment->created_at != $comment->updated_at): ?>
-                    (<?php echo Yii::t('CommentModule.widgets_views_showComment', 'Updated :timeago', array(':timeago' => HHtml::timeago($comment->updated_at))); ?>)
-                <?php endif; ?>
-            </small>
-        </h4>
 
 
         <div class="content" id="comment_editarea_<?php echo $comment->id; ?>">
-            <span id="comment-message-<?php echo $comment->id; ?>"><?php print HHtml::enrichText($comment->message); ?></span>
+            <span id="comment-message-<?php echo $comment->id; ?>"><?php print HHtml::enrichText($comment->message); ?>
+                <span class="comment-author"><a href="<?php echo $user->getProfileUrl(); ?>"><?php echo CHtml::encode($user->displayName); ?></a>
+                    (
+                        <?php Yii::app()->getController()->widget('application.modules_core.like.widgets.LikeLinkWidget', array('object' => $comment)); ?>
+                    )
+                    <small class="hiddentime hidden">
+                        <?php echo HHtml::timeago($comment->created_at); ?>
+                        <?php if ($comment->created_at != $comment->updated_at): ?>
+                            (<?php echo Yii::t('CommentModule.widgets_views_showComment', 'Updated :timeago', array(':timeago' => HHtml::timeago($comment->updated_at))); ?>)
+                        <?php endif; ?>
+                    </small>
+                </span>
+            </span>
             <?php $this->widget('application.modules_core.file.widgets.ShowFilesWidget', array('object' => $comment)); ?>
         </div>
 
 
 
-        <div class="wall-entry-controls">
-            <?php Yii::app()->getController()->widget('application.modules_core.like.widgets.LikeLinkWidget', array('object' => $comment)); ?>
-        </div>
     </div>
-    <hr>
 </div>
 
 <?php if ($justEdited): ?>
