@@ -132,12 +132,21 @@ class Comment extends HActiveRecordContentAddon
         if ($comments === false) {
             $commentCount = self::GetCommentCount($model, $id);
 
+            $limit = ($commentCount < 5) ? 1 : 2 ;  
+            $criteria = new CDbCriteria;
+            $criteria->order = "updated_at ASC";
+            $criteria->offset = 0;
+            $criteria->limit = $limit;
+
+            $first_comments = Comment::model()->findAllByAttributes(array('object_model' => $model, 'object_id' => $id), $criteria);
+
             $criteria = new CDbCriteria;
             $criteria->order = "updated_at ASC";
             $criteria->offset = ($commentCount - 2);
-            $criteria->limit = "2";
+            $criteria->limit = $limit; 
 
-            $comments = Comment::model()->findAllByAttributes(array('object_model' => $model, 'object_id' => $id), $criteria);
+            $last_comments = Comment::model()->findAllByAttributes(array('object_model' => $model, 'object_id' => $id), $criteria);
+            $comments = array_merge($first_comments, $last_comments );
             Yii::app()->cache->set($cacheID, $comments, HSetting::Get('expireTime', 'cache'));
         }
 

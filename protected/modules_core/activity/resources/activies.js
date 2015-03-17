@@ -111,5 +111,11 @@ $(document).ready(function () {
     // load the first activities
     loadMoreActivities();
 
+    $('body').on(
+        'mouseover', 'div.media.commentholder', function(e) { $(e.target).find('small').removeClass('hidden'); 
+        }
+    ).on(
+        'mouseleave', 'div.media.commentholder', function(e) { $(e.target).find('small').addClass('hidden'); }
+    );
 });
 
