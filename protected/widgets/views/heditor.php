@@ -16,7 +16,7 @@ $(document).ready(function () {
 
     }
 
-    var emojis = ["Ambivalent", "Angry", "Confused", "Cool", "Frown", "Gasp", "Grin", "Heart", "Hearteyes", "Laughing", "Slant", "Smile", "Wink", "Yuck"];
+    var emojis = ["Ambivalent", "Angry", "Confused", "Cool", "Frown", "Gasp", "Grin", "Heart", "Horoz", "Hearteyes", "Laughing", "Slant", "Smile", "Wink", "Yuck"];
 
     var emojis_list = $.map(emojis, function (value, i) {
         return {'id': i, 'name': value};
@@ -30,7 +30,7 @@ $(document).ready(function () {
         //tpl: "<li data-value='@${name}'><img class='img-rounded' src='${image}' height='20' width='20' alt=''> ${name}</li>",
         tpl: "<li class='hint' data-value=''>${name}</li>",
         search_key: "name",
-        limit: 10,
+        limit: 11,
         highlight_first: false,
         callbacks: {
             matcher: function (flag, subtext, should_start_with_space) {
