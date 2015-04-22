@@ -69,6 +69,7 @@
         $('#newCommentForm_<?php echo $id; ?>_contenteditable').attr('data-submit', 'true');
 
         // Fire click event for comment button by typing enter
+        $('#newCommentForm_<?php echo $id; ?>_contenteditable').unbind('keydown');
         $('#newCommentForm_<?php echo $id; ?>_contenteditable').keydown(function (event) {
 
 
@@ -107,11 +108,13 @@
         $('.autosize').autosize();
 
 
+        $('#newCommentForm_<?php echo $id; ?>_contenteditable').unbind("shown.atwho");
         $('#newCommentForm_<?php echo $id; ?>_contenteditable').on("shown.atwho", function (event, flag, query) {
             // prevent the submit event, by changing the attribute
             $('#newCommentForm_<?php echo $id; ?>_contenteditable').attr('data-submit', 'false');
         });
 
+        $('#newCommentForm_<?php echo $id; ?>_contenteditable').unbind("hidden.atwho");
         $('#newCommentForm_<?php echo $id; ?>_contenteditable').on("hidden.atwho", function (event, flag, query) {
 
             var interval = setInterval(changeSubmitState, 10);
