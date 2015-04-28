@@ -8,6 +8,7 @@
     <link type="text/css" href="<?php echo Yii::app()->baseUrl; ?>/css/animate.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->baseUrl; ?>/css/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->baseUrl; ?>/css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->baseUrl; ?>/css/jquery.powertip.css"/>
     <link href="<?php echo Yii::app()->baseUrl; ?>/themes/HumHub/css/theme.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css"
           href="<?php echo Yii::app()->baseUrl; ?>/resources/font-awesome/css/font-awesome.min.css">

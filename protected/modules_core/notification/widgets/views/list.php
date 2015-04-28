@@ -191,4 +191,32 @@
 
     })
 
+	function getProfiles(username,e){
+				
+		if($(e).data('powertipjq') === undefined){
+
+			jQuery.getJSON("<?php echo $this->createUrl('//user/search/GetUserInfoPopupByUsename'); ?>" +"&username=" + username, function (json) {
+
+			if(json !=null){
+					
+			var tipContent = $(
+					'<form action="" method="post"><img src="' + json.profil + '">' +
+					'<span class="user"><b>'+username+'</b></span>' + (json.link ? json.link:'<div class="btn"></div>') +
+					'<p class="follow"><span>followers:</span> '+json.followers +
+					 ' <span>following:</span> ' + json.following +'</p></form>'
+				);
+			}
+			
+			$(e).data('powertipjq', tipContent);
+			$(e).powerTip({
+				placement: 'e',
+				mouseOnToPopup: true
+			});
+			$.powerTip.show($(e));
+
+			});
+		}
+    }
+    
+    
 </script>

@@ -106,6 +106,35 @@ class SearchController extends Controller
         Yii::app()->end();
     }
 
+    
+    public function actionGetUserInfoPopupByUsename() {
+    
+    	$json = array();
+    	 
+    	if(Yii::app()->request->getQuery('username') !=null){
+    
+    		$user = User::model()->findByAttributes(array('username' => Yii::app()->request->getQuery('username')));
+    
+    		if ($user != null) {
+    
+    			if (!$user->isCurrentUser()) {
+    				if ($user->isFollowedByUser()) {
+    					$json['link'] = HHtml::postLink(Yii::t("UserModule.widgets_views_profileHeader", "Unfollow"), $user->createUrl('//user/profile/unfollow'), array('class' => 'btn btn-primary'));
+    				} else {
+    					$json['link'] =  HHtml::postLink(Yii::t("UserModule.widgets_views_profileHeader", "Follow"), $user->createUrl('//user/profile/follow'), array('class' => 'btn btn-success'));
+    				}
+    			}
+    		  
+    			$json['followers'] = $user->getFollowerCount();
+    			$json['following'] = $user->getFollowingCount('User') + $user->getFollowingCount('Space');
+    			$json['profil'] = $user->getProfileImage()->getUrl();
+    
+    			print CJSON::encode($json);
+    		}
+    	}
+    	Yii::app()->end();
+    }
+    
 }
 
 ?>
