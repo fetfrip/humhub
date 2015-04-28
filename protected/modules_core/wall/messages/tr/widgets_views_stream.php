@@ -36,5 +36,5 @@ return array (
   'Posts with links' => 'Linkler gönderilerle birlikte',
   'Show all' => 'Hepsini göster',
   'Sorting' => 'Sıralama',
-  'Where I´m involved' => 'Nerede gelişebilirim',
+  'Where I´m involved' => 'Dahil olduğum tartışmalar',
 );

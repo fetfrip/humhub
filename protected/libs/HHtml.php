@@ -266,7 +266,7 @@ class HHtml extends CHtml
      */
     public static function translateEmojis($text, $show = true)
     {
-        $emojis = array('Ambivalent', 'Angry', 'Confused', 'Cool', 'Frown', 'Gasp', 'Grin', 'Heart', 'Hearteyes', 'Laughing', 'Naughty', 'Slant', 'Smile', 'Wink', 'Yuck');
+        $emojis = array('Ambivalent', 'Angry', 'Confused', 'Cool', 'Frown', 'Galpgalp', 'Gasp', 'Grin', 'Heart', 'Hearteyes', 'Laughing', 'Nabarsin', 'Nah', 'Naughty', 'Slant', 'Smile', 'Wink', 'Yuck');
 
         return preg_replace_callback('@;(.*?);@', function($hit) use(&$show, &$emojis) {
             if (in_array($hit[1], $emojis)) {

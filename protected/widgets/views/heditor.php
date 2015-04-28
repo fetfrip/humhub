@@ -16,7 +16,7 @@ $(document).ready(function () {
 
     }
 
-    var emojis = ["Ambivalent", "Angry", "Confused", "Cool", "Frown", "Gasp", "Grin", "Heart", "Hearteyes", "Laughing", "Slant", "Smile", "Wink", "Yuck"];
+    var emojis = ["Ambivalent", "Angry", "Confused", "Cool", "Frown", "Galpgalp", "Gasp", "Grin", "Heart", "Hearteyes", "Laughing", "Nabarsin", "Nah", "Naughty", "Slant", "Smile", "Wink", "Yuck"];
 
     var emojis_list = $.map(emojis, function (value, i) {
         return {'id': i, 'name': value};
@@ -30,7 +30,7 @@ $(document).ready(function () {
         //tpl: "<li data-value='@${name}'><img class='img-rounded' src='${image}' height='20' width='20' alt=''> ${name}</li>",
         tpl: "<li class='hint' data-value=''>${name}</li>",
         search_key: "name",
-        limit: 10,
+        limit: 11,
         highlight_first: false,
         callbacks: {
             matcher: function (flag, subtext, should_start_with_space) {
@@ -76,7 +76,7 @@ $(document).ready(function () {
         insert_tpl: "<img class='atwho-emoji' data-emoji-name=';${name};' src='<?php echo Yii::app()->baseUrl; ?>/img/emoji/${name}.png' />",
         tpl: "<li data-value=';${name};'><img src='<?php echo Yii::app()->baseUrl; ?>/img/emoji/${name}.png' /> ${name}</li>",
         data: emojis_list,
-        limit: 10
+        limit: 11
     });
 
 

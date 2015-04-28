@@ -53,6 +53,8 @@ $(
                                         append(comment[1]).
                                         append(comment[3]);
                                     $(comment[0]).slideDown();
+                                    $(".time").timeago();
+                                    initLikeModule();
                                 }
                             }
                         }
@@ -68,6 +70,8 @@ $(
                                      append(comment[1]).
                                      append(comment[3]);
                                 $(comment[0]).slideDown();
+                                $(".time").timeago();
+                                initLikeModule();
                             }
                         }
 

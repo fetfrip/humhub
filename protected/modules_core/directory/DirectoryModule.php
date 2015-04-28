@@ -33,11 +33,11 @@ class DirectoryModule extends HWebModule
     public static function onTopMenuInit($event)
     {
         $event->sender->addItem(array(
-            'label' => Yii::t('DirectoryModule.base', 'Directory'),
+            'label' => Yii::t('DirectoryModule.base', 'My Discussions'),
             'id' => 'directory',
-            'icon' => '<i class="fa fa-book"></i>',
-            'url' => Yii::app()->createUrl('//directory/directory'),
-            'sortOrder' => 400,
+            'icon' => '<i class="fa fa-comments-o"></i>',
+            'url' => Yii::app()->createUrl('//directory/directory/userPosts'),
+            'sortOrder' => 500,
             'isActive' => (Yii::app()->controller->module && Yii::app()->controller->module->id == 'directory'),
         ));
     }
