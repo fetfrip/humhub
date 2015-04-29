@@ -174,54 +174,6 @@ class DashboardController extends Controller {
 
         print CJSON::encode($json);
         Yii::app()->end();
+        
     }
-    
-    public function actionGetFrontEndInfoByUsename() {
-    
-    	$json = array();
-    	$json['workspaces'] = array();
-    
-    
-    	$username = Yii::app()->request->getParam('username');
-    	
-    	
-    	$users = User::model()->with('workspace')->findAllByAttributes(array(
-    			'username' => $username,
-    			'status' => SpaceMembership::STATUS_MEMBER
-    	));
-    	
-    	    	
-    	
-    	$memberships = SpaceMembership::model()->with('workspace')->findAllByAttributes(array(
-    			'user_id' => $users[0]->id,
-    			'status' => SpaceMembership::STATUS_MEMBER
-    	), $criteria);
-    
-    	foreach ($memberships as $membership) {
-    		$workspace = $membership->workspace;
-    
-    		$info = array();
-    		$info['name'] = CHtml::encode($workspace->name);
-    		#$info['id'] = $workspace->id;	# should be hidden at frontend
-    		$info['guid'] = $workspace->guid;
-    		$info['totalItems'] = $workspace->countItems();
-    		$info['newItems'] = $membership->countNewItems();
-    
-    		$json['workspaces'][] = $info;
-    	}
-    
-    	// New notification count
-    	$sql = "SELECT count(id)
-		FROM notification
-		WHERE  user_id = :user_id AND seen != 1 AND source_object_model != 'Like'";
-    	$connection = Yii::app()->db;
-    	$command = $connection->createCommand($sql);
-    	$userId = Yii::app()->user->id;
-    	$command->bindParam(":user_id", $userId);
-    	$json['newNotifications'] = $command->queryScalar();
-    
-    	print CJSON::encode($json);
-    	Yii::app()->end();
-    }
-
 }
