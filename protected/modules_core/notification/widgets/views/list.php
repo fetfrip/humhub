@@ -202,11 +202,11 @@
 				var _replacement = "onclick='document.getElementById(\""+json.guid+"\").submit(); return false;'>";
 				
 				if(json !=null){
-			
-				json.link = json.link.replace('href="#">', _replacement);
+
+				if(json.link) json.link = json.link.replace('href="#">', _replacement);
 
 				var tipContent = $(
-					'<form id="'+json.guid+'" action="'+_url+'/index.php?r=user/profile/'+(json.link.indexOf('unfollow') > -1 ? 'follow':'unfollow')+
+					'<form id="'+json.guid+'" action="'+_url+'/index.php?r=user/profile/'+(json.link && json.link.indexOf('Unfollow') > -1 ? 'unfollow':'follow')+
 					'&uguid=' + json.guid +
 					'" method="POST"><img src="' + json.profil + '">' +
 					'<input type="hidden" name="CSRF_TOKEN" value="'+_csrf+'">' +
