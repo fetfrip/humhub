@@ -197,10 +197,19 @@
 
 			jQuery.getJSON("<?php echo $this->createUrl('//user/search/GetUserInfoPopupByUsename'); ?>" +"&username=" + username, function (json) {
 
-			if(json !=null){
-					
-			var tipContent = $(
-					'<form action="" method="post"><img src="' + json.profil + '">' +
+				var _csrf = "<?php echo $_COOKIE["CSRF_TOKEN"]; ?>";
+				var _url = "<?php echo HSetting::Get('baseUrl');?>";
+				var _replacement = "onclick='document.getElementById(\""+json.guid+"\").submit(); return false;'>";
+				
+				if(json !=null){
+			
+				json.link = json.link.replace('href="#">', _replacement);
+
+				var tipContent = $(
+					'<form id="'+json.guid+'" action="'+_url+'/index.php?r=user/profile/'+(json.link.indexOf('unfollow') > -1 ? 'follow':'unfollow')+
+					'&uguid=' + json.guid +
+					'" method="POST"><img src="' + json.profil + '">' +
+					'<input type="hidden" name="CSRF_TOKEN" value="'+_csrf+'">' +
 					'<span class="user"><b>'+username+'</b></span>' + (json.link ? json.link:'<div class="btn"></div>') +
 					'<p class="follow"><span>followers:</span> '+json.followers +
 					 ' <span>following:</span> ' + json.following +'</p></form>'

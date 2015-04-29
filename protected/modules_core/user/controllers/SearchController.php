@@ -128,6 +128,7 @@ class SearchController extends Controller
     			$json['followers'] = $user->getFollowerCount();
     			$json['following'] = $user->getFollowingCount('User') + $user->getFollowingCount('Space');
     			$json['profil'] = $user->getProfileImage()->getUrl();
+    			$json['guid'] = $user->guid;
     
     			print CJSON::encode($json);
     		}
