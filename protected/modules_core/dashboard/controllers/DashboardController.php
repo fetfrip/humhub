@@ -174,6 +174,6 @@ class DashboardController extends Controller {
 
         print CJSON::encode($json);
         Yii::app()->end();
+        
     }
-
 }
