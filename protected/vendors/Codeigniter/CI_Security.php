@@ -347,7 +347,7 @@ class CI_Security {
 
             return $str;
         }
-
+        
         // Remove Invisible Characters
         $str = remove_invisible_characters($str);
 
@@ -360,11 +360,6 @@ class CI_Security {
          *
          * Note: Use rawurldecode() so it does not remove plus signs
          */
-        do
-        {
-            $str = rawurldecode($str);
-        }
-        while (preg_match('/%[0-9a-f]{2,}/i', $str));
 
         /*
          * Convert character entities to ASCII
