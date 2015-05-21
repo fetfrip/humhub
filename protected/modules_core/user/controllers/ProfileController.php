@@ -61,6 +61,11 @@ class ProfileController extends Controller
     {
         $this->render('index');
     }
+    
+    public function actionFollowing()
+    {
+        $this->render('following', array());
+    }
 
     /**
      *

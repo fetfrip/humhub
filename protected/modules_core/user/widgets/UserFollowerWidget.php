@@ -10,12 +10,15 @@
 class UserFollowerWidget extends HWidget
 {
 
+    public $limit = 16;
+
     public function run()
     {
         $user = Yii::app()->getController()->getUser();
 
         $this->render('userFollower', array(
             'user' => $user,
+            'limit' => $this->limit,
         ));
     }
 
