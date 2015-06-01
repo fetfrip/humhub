@@ -1,10 +1,8 @@
 <?php
 
 /**
- * This widget is used include the comments functionality to a wall entry.
- *
- * Normally it shows a excerpt of all comments, but provides the functionality
- * to show all comments.
+ * Renders comments without parent html layers. It shows a excerpt of all comments,
+ * but provides the functionality to show all comments.
  *
  * @package humhub.modules_core.comment
  * @since 0.5
@@ -17,7 +15,17 @@ class CommentsWidget extends HWidget
      */
     public $object;
 
-    public function init() 
+    /**
+     * Are all comments visible or not?
+     */
+    public $isLimited;
+
+    /*
+     * Shown comment count at a time.
+     */
+    public $shownCommentCount;
+
+    public function init()
     {
         Yii::app()->clientScript->registerScriptFile(
                 Yii::app()->assetManager->publish(
@@ -31,30 +39,40 @@ class CommentsWidget extends HWidget
      */
     public function run()
     {
-
         $modelName = $this->object->content->object_model;
         $modelId = $this->object->content->object_id;
-        
-        // Indicates that the number of comments was limited
-        $isLimited = false;
+        $shownCommentCount = $this->shownCommentCount;
 
-        // Count all Comments
+        // Count all Comments. Get this count above of the isLimited flag since
+        // it takes into account comment count if the content just created.
         $commentCount = Comment::GetCommentCount($modelName, $modelId);
-        $comments = Comment::GetCommentsLimited($modelName, $modelId, 2);
 
-        if ($commentCount > 2)
-            $isLimited = true;
+        $isLimited = ($commentCount < Comment::DEFAULT_SHOWN_COMMENT_COUNT) ? false : $this->isLimited;
+
+        // Shown comment count value is writing to the redis server.
+        $shownCommentCountCacheId = 'shown_comment_count_' . $modelName . '_' . $modelId;
+        Yii::app()->redis->getClient()->set($shownCommentCountCacheId, $shownCommentCount, Comment::CACHE_TIMEOUT);
+
+        // Putting the visibility of the old comments to the redis in order to determine to show after delete
+        // and post contents.
+        $isLimitedCacheId = 'is_limited_'.$modelName.'_'.$modelId;
+        Yii::app()->redis->getClient()->set($isLimitedCacheId, $isLimited, Comment::CACHE_TIMEOUT);
+
+        // Deleting caches since the following GetCommentsLimited method gets the comments from cache always.
+        // And because of that we can not show and hide old comments.
+        Yii::app()->cache->delete(sprintf("commentCount_%s_%s", $modelName, $modelId));
+        Yii::app()->cache->delete(sprintf("commentsLimited_%s_%s", $modelName, $modelId));
+
+        $comments = Comment::GetCommentsLimited($modelName, $modelId, ($isLimited ? $shownCommentCount : $commentCount));
 
         $this->render('comments', array(
-            'object' => $this->object,
-            
-            'comments' => $comments,
-            'modelName' => $modelName,
-            'modelId' => $modelId,
-            'id' => $modelName . "_" . $modelId,
-            'isLimited' => $isLimited,
-            'total' => $commentCount
-                )
+                'comments' => $comments,
+                'commentCount' => $commentCount,
+                'modelName' => $modelName,
+                'modelId' => $modelId,
+                'id' => $modelName . "_" . $modelId,
+                'isLimited' => $isLimited
+            )
         );
     }
 

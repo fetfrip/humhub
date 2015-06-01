@@ -18,7 +18,7 @@ class ShowCommentWidget extends HWidget
 
     /**
      * Indicates the comment was just edited
-     * 
+     *
      * @var boolean
      */
     public $justEdited = false;
@@ -35,8 +35,7 @@ class ShowCommentWidget extends HWidget
             'comment' => $this->comment,
             'user' => $user,
             'justEdited' => $this->justEdited,
-                )
-        );
+        ));
     }
 
 }

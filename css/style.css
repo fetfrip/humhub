@@ -866,3 +866,10 @@ textarea.placeholder {
 .fetfrip-comment .media-heading span {
     font-weight: normal;
 }
+
+.comments-loader {
+    background-position: left !important;
+    background-size: 16px 16px !important;
+    height: 30px !important;
+    display: none;
+}

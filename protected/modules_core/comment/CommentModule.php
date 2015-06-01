@@ -77,7 +77,7 @@ class CommentModule extends HWebModule
      */
     public static function onWallEntryAddonInit($event)
     {
-        $event->sender->addWidget('application.modules_core.comment.widgets.CommentsWidget', array('object' => $event->sender->object), array('sortOrder' => 20));
+        $event->sender->addWidget('application.modules_core.comment.widgets.CommentsAreaWidget', array('object' => $event->sender->object), array('sortOrder' => 20));
     }
 
 }
