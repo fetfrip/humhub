@@ -48,7 +48,7 @@ class CommentFormWidget extends HWidget
         $this->render('form', array(
             'modelName' => $modelName,
             'modelId' => $modelId,
-            'id' => $modelName . "_" . $modelId,
+            'id' => $id
         ));
     }
 

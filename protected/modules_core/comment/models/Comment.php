@@ -25,6 +25,10 @@
 class Comment extends HActiveRecordContentAddon
 {
 
+    const DEFAULT_SHOWN_COMMENT_COUNT = 2;
+
+    const CACHE_TIMEOUT = 86400; // 24 * 60 * 60 -> 1 day for default redis cache timeout.
+
     /**
      * Returns the static model of the specified AR class.
      * @param string $className active record class name.

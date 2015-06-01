@@ -62,5 +62,8 @@ return CMap::mergeArray($pre_config, array(
                     "database" => 0,
                     "prefix" => ""
                 ),
+                "redisCache" => array(
+                    "class" => "ext.yiiredis.ARedisCache"
+                ),
             ),
         ));

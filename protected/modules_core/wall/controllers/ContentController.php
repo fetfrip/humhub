@@ -69,6 +69,12 @@ class ContentController extends Controller
             $json['wallEntryIds'][] = 0;
 
             if ($content->delete()) {
+                // Deleting the flag about showing all comments of the content from redis server.
+                $isLimitedCacheId = 'is_limited_'.$model.'_'.$id;
+                Yii::app()->redis->getClient()->del($isLimitedCacheId);
+                $shownCommentsCountCacheId = 'shown_comments_count_'.$model.'_'.$id;
+                Yii::app()->redis->getClient()->del($shownCommentsCountCacheId);
+
                 $json['success'] = true;
             }
         }

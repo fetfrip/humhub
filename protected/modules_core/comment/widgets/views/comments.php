@@ -6,7 +6,7 @@
  * @property Array $comments a list of comments to display
  * @property String $modelName The Model (e.g. Post) which the comments belongs to
  * @property Int $modelId The Primary Key of the Model which the comments belongs to
- * @property Int $total the number of total existing comments for this object
+ * @property Int $commentCount the number of total existing comments for this object
  * @property Boolean $isLimited indicates if not all comments are shown
  * @property String $id is a unique Id on Model and PK e.g. (Post_1)
  *
@@ -15,36 +15,25 @@
  */
 ?>
 
+<?php if ($commentCount > 2) { ?>
 
-<div class="well well-small" style="display: none;" id="comment_<?php echo $id; ?>">
-    <div class="comment" id="comments_area_<?php echo $id; ?>">
-        <?php if ($isLimited): ?>
-            <?php
-            // Create an ajax link, which loads all comments upon request
-            $showAllLabel = Yii::t('CommentModule.widgets_views_comments', 'Show all {total} comments.', array('{total}' => $total));
-            $reloadUrl = CHtml::normalizeUrl(Yii::app()->createUrl('comment/comment/show', array('model' => $modelName, 'id' => $modelId)));
-            echo HHtml::ajaxLink($showAllLabel, $reloadUrl, array(
-                'success' => "function(html) { $('#comments_area_" . $id . "').html(html); }",
-                    ), array('id' => $id . "_showAllLink", 'class' => 'show show-all-link'));
-            ?>
-            <hr>
-        <?php endif; ?>
+    <?php
+    // Create an ajax link, which loads all comments upon request
+    $showAllLabel = Yii::t('CommentModule.widgets_views_comments', $isLimited ? 'Show all {total} comments.' : 'Hide old comments.', array('{total}' => $commentCount));
+    $reloadUrl = CHtml::normalizeUrl(Yii::app()->createUrl('comment/comment/show', array('model' => $modelName, 'id' => $modelId, 'isLimited' => !$isLimited)));
+    echo HHtml::ajaxLink($showAllLabel, $reloadUrl, array(
+        'beforeSend' => "function(){ $('#comments_loader_" . $id . "').show(); }",
+        'complete' => "function(){ $('#comments_loader_" . $id . "').hide(); }",
+        'success' => "function(html) { $('#comments_area_" . $id . "').html(html); }",
+    ), array('id' => $id . "_showAllLink", 'class' => 'show show-all-link'));
+    ?>
 
-        <?php foreach ($comments as $comment) : ?>
-            <?php $this->widget('application.modules_core.comment.widgets.ShowCommentWidget', array('comment' => $comment)); ?>
-        <?php endforeach; ?>
-    </div>
+    <hr>
 
-    <?php $this->widget('application.modules_core.comment.widgets.CommentFormWidget', array('object' => $object)); ?>
+    <div id="comments_loader_<?php echo $id; ?>" class="loader comments-loader"></div>
 
-</div>
-<?php /* END: Comment Create Form */ ?>
-
-<script type="text/javascript">
-
-<?php if (count($comments) != 0) { ?>
-        // make comments visible at this point to fixing autoresizing issue for textareas in Firefox
-        $('#comment_<?php echo $id; ?>').show();
 <?php } ?>
 
-</script>
+<?php foreach ($comments as $comment) : ?>
+    <?php $this->widget('application.modules_core.comment.widgets.ShowCommentWidget', array('comment' => $comment)); ?>
+<?php endforeach; ?>

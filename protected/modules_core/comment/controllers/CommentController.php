@@ -91,19 +91,12 @@ class CommentController extends Controller
     /**
      * Returns a List of all Comments belong to this Model
      */
-    public function actionShow()
+    public function actionShow($isLimited, $shownCommentCount = Comment::DEFAULT_SHOWN_COMMENT_COUNT)
     {
 
         $target = $this->loadTargetModel();
 
-        $output = "";
-
-        // Get new current comments
-        $comments = Comment::model()->findAllByAttributes(array('object_model' => get_class($target), 'object_id' => $target->id));
-
-        foreach ($comments as $comment) {
-            $output .= $this->widget('application.modules_core.comment.widgets.ShowCommentWidget', array('comment' => $comment), true);
-        }
+        $output = $this->widget('application.modules_core.comment.widgets.CommentsWidget', array('object' => $target, 'isLimited' => $isLimited, 'shownCommentCount' => $shownCommentCount), true);
 
         Yii::app()->clientScript->render($output);
         echo $output;
@@ -137,6 +130,12 @@ class CommentController extends Controller
 
         $this->forcePostRequest();
         $target = $this->loadTargetModel();
+
+        // Get the visibility of the old comments from redis.
+        $isLimitedCacheId = 'is_limited_'.get_class($target).'_'.$target->id;
+        $isLimited = Yii::app()->redis->getClient()->get($isLimitedCacheId);
+
+        $shownCommentCount = Comment::DEFAULT_SHOWN_COMMENT_COUNT;
 
         $message = Yii::app()->request->getParam('message', "");
         $message = Yii::app()->input->stripClean(trim($message));
@@ -172,11 +171,24 @@ class CommentController extends Controller
 
             $comment->save();
             $target->updated_at = new CDbExpression('NOW()');
-	    $target->save();
+	        $target->save();
             File::attachPrecreated($comment, Yii::app()->request->getParam('fileList'));
+
+            $shownCommentCount = $this->increaseShownCommentCount($comment->object_model, $comment->object_id);
         }
 
-        return $this->actionShow();
+        return $this->actionShow($isLimited, $shownCommentCount);
+    }
+
+    private function increaseShownCommentCount($modelName, $modelId)
+    {
+        $shownCommentCountCacheId = 'shown_comment_count_'.$modelName.'_'.$modelId;
+        $shownCommentCount = Yii::app()->redis->getClient()->get($shownCommentCountCacheId);
+
+        // Increasing shownCommentCount if new comment saved successfully.
+        Yii::app()->redis->getClient()->set($shownCommentCountCacheId, ++$shownCommentCount, Comment::CACHE_TIMEOUT);
+
+        return $shownCommentCount;
     }
 
     public function actionEdit()
@@ -218,6 +230,11 @@ class CommentController extends Controller
 
         $this->forcePostRequest();
         $target = $this->loadTargetModel();
+
+        // Get the visibility of the old comments from redis.
+        $isLimitedCacheId = 'is_limited_'.get_class($target).'_'.$target->id;
+        $isLimited = Yii::app()->redis->getClient()->get($isLimitedCacheId);
+
         $commentId = (int) Yii::app()->request->getParam('cid', "");
 
         $comment = Comment::model()->findByPk($commentId);
@@ -235,7 +252,10 @@ class CommentController extends Controller
             throw new CHttpException(500, Yii::t('CommentModule.controllers_CommentController', 'Could not delete comment!')); // Possible Hack attempt!
         }
 
-        return $this->actionShow();
+        $shownCommentCountCacheId = 'shown_comment_count_' . get_class($target) . '_' . $target->id;
+        $shownCommentCount = Yii::app()->redis->getClient()->get($shownCommentCountCacheId);
+
+        return $this->actionShow($isLimited, $shownCommentCount);
     }
 
     public function actionApiCount()                                                                                                                                           

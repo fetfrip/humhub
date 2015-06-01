@@ -18,4 +18,5 @@
  */
 return array (
   'Show all {total} comments.' => '',
+  'Hide old comments.' => ''
 );

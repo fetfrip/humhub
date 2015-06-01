@@ -79,25 +79,29 @@ $(document).ready(function () {
         limit: 11
     });
 
-
     // remove placeholder text
-    $('#<?php echo $id; ?>_contenteditable').focus(function () {
-        $(this).removeClass('atwho-placeholder');
+    $('#<?php echo $id; ?>_contenteditable').focus(function (e) {
+        var htmlText = $(this).html().replace(/^\s+|\s+$/gm,'');
+        var placeholderTrimmed = placeholder.replace(/^\s+|\s+$/gm,'');
 
-        if ($(this).html() == placeholder) {
-            $(this).html(' ');
-            $(this).focus();
+        if ($(this).html() == placeholderTrimmed) {
+            $('#<?php echo $id; ?>_contenteditable').html('').focus();
         }
-    })
+
+        $(this).removeClass('atwho-placeholder');
+    });
     // add placeholder text, if input is empty
-    $('#<?php echo $id; ?>_contenteditable').focusout(function () {
-        if ($(this).html() == "" || $(this).html() == " " || $(this).html() == " <br>") {
+    $('#<?php echo $id; ?>_contenteditable').focusout(function (e) {
+        var htmlText = $(this).html().replace(/^\s+|\s+$/gm,'');
+
+        if (htmlText == "" || htmlText == "<br>") {
             $(this).html(placeholder);
             $(this).addClass('atwho-placeholder');
         } else {
             $('#<?php echo $id; ?>').val(getPlainInput($(this).clone()));
         }
-    })
+
+    });
 
     $('#<?php echo $id; ?>_contenteditable').on('paste', function (event) {
 
