@@ -91,18 +91,35 @@ class CommentController extends Controller
     /**
      * Returns a List of all Comments belong to this Model
      */
-    public function actionShow()
+    public function actionShow($collapsed = false)
     {
 
         $target = $this->loadTargetModel();
 
-        $output = "";
 
         // Get new current comments
         $comments = Comment::model()->findAllByAttributes(array('object_model' => get_class($target), 'object_id' => $target->id));
+        $n = count($comments);
+        
+        $output = "";
+        
+        if ($collapsed) {
 
-        foreach ($comments as $comment) {
-            $output .= $this->widget('application.modules_core.comment.widgets.ShowCommentWidget', array('comment' => $comment), true);
+            $showAllLabel = Yii::t('CommentModule.widgets_views_comments', 'Show all {total} comments.', array('{total}' => $n));
+            $reloadUrl = CHtml::normalizeUrl(Yii::app()->createUrl('comment/comment/show', array('model' => get_class($target), 'id' => $target->id)));
+            $id = get_class($target) . '_' . $target->id;
+            $output .= HHtml::ajaxLink($showAllLabel, $reloadUrl, array(
+                'success' => "function(html) { $('#comments_area_" . $id . "').html(html); }",
+                    ), array('id' => $id . "_showAllLink", 'class' => 'show show-all-link'));
+            $output .= '<hr>';
+
+            for ($id = $n - 1; ($id > $n - 3 && $id > -1) ; $id--) {
+                $output .= $this->widget('application.modules_core.comment.widgets.ShowCommentWidget', array('comment' => $comments[$id]), true);
+            }
+        } else {
+            foreach ($comments as $comment) {
+                $output .= $this->widget('application.modules_core.comment.widgets.ShowCommentWidget', array('comment' => $comment), true);
+            }
         }
 
         Yii::app()->clientScript->render($output);
@@ -140,6 +157,8 @@ class CommentController extends Controller
 
         $message = Yii::app()->request->getParam('message', "");
         $message = Yii::app()->input->stripClean(trim($message));
+        
+        $collapsed = (Yii::app()->request->getParam('collapsed', "false") == 'true');
 
         if ($message != "") {
 
@@ -172,11 +191,11 @@ class CommentController extends Controller
 
             $comment->save();
             $target->updated_at = new CDbExpression('NOW()');
-	    $target->save();
+	        $target->save();
             File::attachPrecreated($comment, Yii::app()->request->getParam('fileList'));
         }
 
-        return $this->actionShow();
+        return $this->actionShow($collapsed);
     }
 
     public function actionEdit()

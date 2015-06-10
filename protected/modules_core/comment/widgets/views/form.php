@@ -13,6 +13,7 @@
     <?php echo CHtml::form("#"); ?>
     <?php echo CHtml::hiddenField('model', $modelName); ?>
     <?php echo CHtml::hiddenField('id', $modelId); ?>
+    <?php echo CHtml::hiddenField('collapsed', "true"); ?>
 
     <?php echo CHtml::textArea("message", "", array('id' => 'newCommentForm_' . $id, 'rows' => '1', 'class' => 'form-control autosize commentForm', 'placeholder' => Yii::t('CommentModule.widgets_views_form', 'Write a new comment...'))); ?>
 
@@ -64,7 +65,7 @@
 <script>
 
     $(document).ready(function () {
-
+        
         // add attribute to manage the enter/submit event (prevent submit, if user press enter to insert an item from atwho plugin)
         $('#newCommentForm_<?php echo $id; ?>_contenteditable').attr('data-submit', 'true');
 
@@ -84,6 +85,7 @@
 
                 // check if a submit is allowed
                 if ($('#newCommentForm_<?php echo $id; ?>_contenteditable').attr('data-submit') == 'true') {
+                    $('#comment_create_post_<?php echo $id; ?>').closest('form').find('input[name=collapsed]').val(($('#<?php echo $id ?>_showAllLink').length > 0));
 
                     // get plain input text from contenteditable DIV
                     $('#newCommentForm_<?php echo $id; ?>').val(getPlainInput($('#newCommentForm_<?php echo $id; ?>_contenteditable').clone()));
